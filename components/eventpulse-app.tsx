@@ -4,7 +4,7 @@ import { useMemo, useState } from 'react'
 import Link from 'next/link'
 import { Bell, Bookmark, CalendarDays, ChevronDown, ChevronRight, CircleCheck, Compass, ExternalLink, Filter, Heart, MapPin, Menu, MoreHorizontal, Navigation, Plus, Search, Share2, Sparkles, Target, X } from 'lucide-react'
 
-type EventItem = {
+export type EventItem = {
   id: string
   title: string
   category: string
@@ -20,7 +20,7 @@ type EventItem = {
   deadline?: string
 }
 
-const events: EventItem[] = [
+export const events: EventItem[] = [
   { id: 'ai-summit', title: 'AI Builders Summit 2024', category: 'AI & ML', date: 'Sat, 16 Nov', time: '10:00 AM', venue: 'Taj Lands End, Bandra', distance: 2.4, fee: 'Free', source: 'verified', image: 'https://images.unsplash.com/photo-1531482615713-2afd69097998?auto=format&fit=crop&w=800&q=80', accent: '#9275ff', match: 'Matches your interest in AI', deadline: 'Closes tomorrow' },
   { id: 'design-weekend', title: 'Designing for Impact', category: 'Design', date: 'Sun, 17 Nov', time: '11:00 AM', venue: 'The Studio, Lower Parel', distance: 4.8, fee: '₹499', source: 'verified', image: 'https://images.unsplash.com/photo-1556761175-b413da4baf72?auto=format&fit=crop&w=800&q=80', accent: '#36d6d2', match: 'Only 4.8 km away' },
   { id: 'founders-meet', title: 'Mumbai Founders & Funders', category: 'Startups', date: 'Thu, 21 Nov', time: '6:30 PM', venue: '91Springboard, Vikhroli', distance: 8.1, fee: 'Free', source: 'web', image: 'https://images.unsplash.com/photo-1556761175-5973dc0f32e7?auto=format&fit=crop&w=800&q=80', accent: '#e2a55d', match: 'Free to attend' },
