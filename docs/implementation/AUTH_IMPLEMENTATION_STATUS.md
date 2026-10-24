@@ -2,14 +2,14 @@
 
 **Overall status:** `IN_PROGRESS`
 **Current phase:** Phase 2 — Supabase dependencies and clients  
-**Current step:** `AUTH-06`
-**Last completed step:** `AUTH-05`
+**Current step:** `AUTH-07`
+**Last completed step:** `AUTH-06`
 **AUTH-02 implementation commit:** `7cf24c7` (`feat(auth): complete AUTH-02 Supabase client setup`)  
 **Status authority:** This file reflects verified repository state, not generated code or chat progress.
 
 ## Current task
 
-`AUTH-05` is complete. The signup form validates credentials, calls Supabase Auth, wires confirmation links through the callback route, and reports confirmation-pending state without claiming a session exists.
+`AUTH-06` is complete. Login validates and establishes Supabase-managed sessions, preserves safe internal destinations, and logout signs out through a server route before returning to the public home page.
 
 ## Next action
 
@@ -24,7 +24,8 @@ Complete AUTH-04 verification and commit before beginning AUTH-05.
 | AUTH-03 | `COMPLETED` | Added the root Next.js 16 `proxy.ts`, shared Supabase SSR refresh helper, static-asset-excluding matcher, and request/response cookie propagation. Redirects and protected-route enforcement are explicitly deferred from this checkpoint per task scope. Implementation commit: `916106973d6aca7601d05b5b9fb605e31f597ad2`. |
 | AUTH-04 | `COMPLETED` | Added safe same-origin redirect validation and `/auth/callback` code exchange with explicit failure redirects. Implementation commit: `805a6abf8117a3e7252dc8c5503eb1d8d349269b`. |
 | AUTH-05 | `COMPLETED` | Added email/password signup, validation, callback return-path wiring, and confirmation-pending feedback. Implementation commit: `efd2453c07cca99983f51831bc977c6d1d9ea92a`. |
-| AUTH-06 | `IN_PROGRESS` | Adding login, safe destination handling, and logout. |
+| AUTH-06 | `COMPLETED` | Added login, safe destination handling, and logout. Implementation commit: `897e9b12c586fd2c8898fd02ec893a067fc45013`. |
+| AUTH-07 | `IN_PROGRESS` | Adding protected-route enforcement and authenticated identity without implying organizer authorization. |
 | AUTH-07 | `NOT_STARTED` | Protected routes and authenticated identity are not implemented. Current bookmarks and organizer forms remain demo-only. |
 | AUTH-08 | `NOT_STARTED` | No auth test setup exists; `package.json` has no test script. `next.config.mjs` still ignores TypeScript build errors. |
 | AUTH-09 | `NOT_STARTED` | Handoff review is pending completion of the core steps. |
@@ -82,6 +83,12 @@ Complete AUTH-04 verification and commit before beginning AUTH-05.
 - [components/auth/signup-form.tsx](../../components/auth/signup-form.tsx): validated Supabase signup and confirmation-pending UI.
 - [app/globals.css](../../app/globals.css): auth form styling consistent with the EventPulse shell.
 
+### AUTH-06 files
+
+- [app/(auth)/login/page.tsx](../../app/(auth)/login/page.tsx): login route entry.
+- [components/auth/login-form.tsx](../../components/auth/login-form.tsx): password login and safe destination handling.
+- [app/auth/logout/route.ts](../../app/auth/logout/route.ts): server-side Supabase sign-out route.
+
 The worktree’s unrelated modifications in [components/eventpulse-app.tsx](../../components/eventpulse-app.tsx) and [components/eventpulse-pages.tsx](../../components/eventpulse-pages.tsx), plus generated `next-env.d.ts` and `tsconfig.tsbuildinfo`, were preserved.
 
 ## Commands executed
@@ -132,6 +139,9 @@ No packages beyond the two AUTH-02-approved dependencies were installed, no appl
 | AUTH-05 type check | Passed: direct `node_modules/.bin/tsc.cmd --noEmit` exited 0 after the generated route types were refreshed by the build. |
 | AUTH-05 production build | Passed: direct `node_modules/.bin/next.cmd build` exited 0; Next reported that type validation was skipped by the existing setting. |
 | AUTH-05 diff and staged-diff checks | Passed: implementation staged diff contained only signup files and auth styling; staged whitespace check exited 0. |
+| AUTH-06 type check | Passed: direct `node_modules/.bin/tsc.cmd --noEmit` exited 0. |
+| AUTH-06 production build | Passed: direct `node_modules/.bin/next.cmd build` exited 0; Next reported that type validation was skipped by the existing setting. |
+| AUTH-06 diff and staged-diff checks | Passed: implementation staged diff contained only login and logout files; staged whitespace check exited 0. |
 
 ## Configuration implications
 
@@ -173,6 +183,14 @@ AUTH-05 follows the canonical architecture. Supabase confirmation email delivery
 - Commit message: `feat(auth): complete AUTH-05 signup flow`
 - Tracker update is committed separately so the implementation commit remains limited to AUTH-05 code.
 
+AUTH-06 follows the canonical architecture. Live credential, refresh-persistence, and logout verification remain unavailable without project configuration.
+
+### AUTH-06 checkpoint commit
+
+- Implementation commit: `897e9b12c586fd2c8898fd02ec893a067fc45013`
+- Commit message: `feat(auth): complete AUTH-06 login and logout`
+- Tracker update is committed separately so the implementation commit remains limited to AUTH-06 code.
+
 ### AUTH-03 checkpoint commit
 
 - Implementation commit: `916106973d6aca7601d05b5b9fb605e31f597ad2`
@@ -187,4 +205,4 @@ AUTH-02 followed the canonical plan:
 
 ## Handoff
 
-After the AUTH-05 implementation and tracker commits, continue with **AUTH-06** only after rereading the canonical plan and this status file.
+After the AUTH-06 implementation and tracker commits, continue with **AUTH-07** only after rereading the canonical plan and this status file.
