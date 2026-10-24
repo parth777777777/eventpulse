@@ -3,7 +3,7 @@
 import { useEffect, useRef } from 'react'
 import type { DiscoveryEvent } from '@/lib/discovery/types'
 import { isValidCoordinate } from '@/lib/discovery/geo'
-import type * as L from 'leaflet'
+import type { Map as LeafletMap, Marker as LeafletMarker } from 'leaflet'
 
 /**
  * EventMap — renders a Leaflet map with event markers.
@@ -36,8 +36,8 @@ export default function EventMap({
   className,
 }: EventMapProps) {
   const containerRef = useRef<HTMLDivElement>(null)
-  const mapRef = useRef<L.Map | null>(null)
-  const markersRef = useRef<Map<string, L.Marker>>(new Map())
+  const mapRef = useRef<LeafletMap | null>(null)
+  const markersRef = useRef<Map<string, LeafletMarker>>(new Map())
   const mountedRef = useRef(false)
 
   // Initialize map once

@@ -1,7 +1,7 @@
 'use client'
 
-import type { SearchState } from './types'
-import { DEFAULT_RADIUS_KM } from './types'
+import type { SearchState } from './types.ts'
+import { DEFAULT_RADIUS_KM } from './types.ts'
 
 /**
  * Parse discovery search state from URL search parameters.

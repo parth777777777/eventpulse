@@ -15,9 +15,9 @@ test('haversineKm: same point returns 0', () => {
   assert.equal(haversineKm(19.076, 72.877, 19.076, 72.877), 0)
 })
 
-test('haversineKm: Mumbai → Pune ≈ 149 km', () => {
+test('haversineKm: Mumbai → Pune ≈ 120 km', () => {
   const d = haversineKm(19.076, 72.877, 18.5204, 73.8567)
-  assert.ok(d > 140 && d < 160, `Expected ~149, got ${d}`)
+  assert.ok(d > 115 && d < 125, `Expected ~120, got ${d}`)
 })
 
 test('haversineKm: points within 25 km', () => {
@@ -27,8 +27,8 @@ test('haversineKm: points within 25 km', () => {
 })
 
 test('haversineKm: points outside 25 km', () => {
-  // Mumbai to Thane ~50 km
-  const d = haversineKm(19.076, 72.877, 19.2183, 72.9781)
+  // Mumbai to Nashik is more than 25 km
+  const d = haversineKm(19.076, 72.877, 19.9975, 73.7898)
   assert.ok(d > 25, `Expected > 25 km, got ${d}`)
 })
 
