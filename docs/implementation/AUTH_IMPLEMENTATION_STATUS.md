@@ -162,6 +162,7 @@ No packages beyond the two AUTH-02-approved dependencies were installed, no appl
 | AUTH-08 type check | Passed: direct `node_modules/.bin/tsc.cmd --noEmit` exited 0. |
 | AUTH-08 production build | Passed: direct `node_modules/.bin/next.cmd build` exited 0 and explicitly ran TypeScript validation. |
 | AUTH-08 diff and staged-diff checks | Passed: staged implementation diff contained only tests and build/test configuration; staged whitespace check exited 0. |
+| Final corrective verification | Passed: after preserving cookie attributes across protected redirects and surfacing logout failures, `npm test`, direct `tsc.cmd --noEmit`, `next.cmd build`, and staged `git diff --check` all exited 0. |
 
 ## Configuration implications
 
@@ -218,6 +219,12 @@ AUTH-06 follows the canonical architecture. Live credential, refresh-persistence
 - Implementation commit: `828df53656db0b533dfc461658c9c875569ec33e`
 - Commit message: `feat(auth): complete AUTH-07 protected routes and identity`
 - Tracker update is committed separately so the implementation commit remains limited to AUTH-07 code.
+
+### Corrective auth boundary commit
+
+- Implementation commit: `e30265b17da3a2d8a9d9200d7a0463ce7b337a9e`
+- Commit message: `fix(auth): preserve session cookies and logout errors`
+- This follow-up corrected cookie attribute propagation on protected redirects and made logout provider failures explicit.
 
 AUTH-08 completed the minimal local verification scope without adding a test dependency or claiming live Supabase behavior.
 
