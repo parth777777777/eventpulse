@@ -9,7 +9,7 @@
 
 ## Current task
 
-`AUTH-02` is complete. The approved Supabase packages, public configuration validator, browser client, and cookie-aware server client were added and type-checked. No signup, login, callback, logout, proxy, protected-route behavior, migration, or application feature work was implemented.
+`AUTH-03` is complete for the approved session-refresh scope. The Next.js 16 session-refresh boundary was added without authentication redirects, protected-route enforcement, or other auth flows. `AUTH-02` remains complete: the approved Supabase packages, public configuration validator, browser client, and cookie-aware server client were added and type-checked.
 
 ## Next action
 
@@ -21,7 +21,7 @@ Before starting AUTH-03, review the client boundaries and verify the worktree. A
 |---|---|---|
 | AUTH-01 | `COMPLETED` | Baseline findings, route matrix, configuration contract, build risk, and test strategy were recorded. Developer-terminal `tsc --noEmit` exited 0 with `.next/types/routes.d.ts` present; no secrets or application behavior were added. |
 | AUTH-02 | `COMPLETED` | Added `@supabase/ssr` 0.12.7 and `@supabase/supabase-js` 2.118.0, public configuration validation, browser client, and cookie-aware server client. Type-check and missing-configuration checks passed. Runtime Supabase behavior remains unverified without project configuration. |
-| AUTH-03 | `NOT_STARTED` | No Next.js 16 `proxy.ts` or session-refresh helper exists. |
+| AUTH-03 | `COMPLETED` | Added the root Next.js 16 `proxy.ts`, shared Supabase SSR refresh helper, static-asset-excluding matcher, and request/response cookie propagation. Redirects and protected-route enforcement are explicitly deferred from this checkpoint per task scope. Implementation commit: `916106973d6aca7601d05b5b9fb605e31f597ad2`. |
 | AUTH-04 | `NOT_STARTED` | No callback route or safe redirect utility exists. |
 | AUTH-05 | `NOT_STARTED` | No signup page or email-confirmation flow exists. |
 | AUTH-06 | `NOT_STARTED` | No login/logout flow exists. |
@@ -66,6 +66,11 @@ Before starting AUTH-03, review the client boundaries and verify the worktree. A
 - [components/eventpulse-pages.tsx](../../components/eventpulse-pages.tsx)
 - Existing App Router page files and the documented files under [docs/](..)
 
+### AUTH-03 files
+
+- [proxy.ts](../../proxy.ts): Next.js 16 root proxy entry point and static-asset-excluding matcher.
+- [lib/supabase/proxy.ts](../../lib/supabase/proxy.ts): refreshes the Supabase user session and propagates updated cookies to the request and response.
+
 The worktree’s unrelated modifications in [components/eventpulse-app.tsx](../../components/eventpulse-app.tsx) and [components/eventpulse-pages.tsx](../../components/eventpulse-pages.tsx), plus generated `next-env.d.ts` and `tsconfig.tsbuildinfo`, were preserved.
 
 ## Commands executed
@@ -107,6 +112,9 @@ No packages beyond the two AUTH-02-approved dependencies were installed, no appl
 | Public-route regression | Not run. |
 | AUTH-02 module/type checks | Passed. |
 | AUTH-02 missing-configuration check | Passed. |
+| AUTH-03 type check | Passed: direct `node_modules/.bin/tsc.cmd --noEmit` exited 0. |
+| AUTH-03 production build | Passed: direct `node_modules/.bin/next.cmd build` exited 0; Next reported that type validation was skipped by the existing `typescript.ignoreBuildErrors` setting. |
+| AUTH-03 diff and staged-diff checks | Passed: working-tree and staged `git diff --check` completed with no whitespace errors; the implementation staged diff contained only `proxy.ts` and `lib/supabase/proxy.ts`. |
 
 ## Configuration implications
 
@@ -126,7 +134,19 @@ No packages beyond the two AUTH-02-approved dependencies were installed, no appl
 
 ## Deviations from the canonical plan
 
-None. AUTH-02 followed the canonical plan:
+AUTH-03 is intentionally narrower than the canonical plan for this checkpoint:
+
+- Session refresh and cookie propagation are implemented.
+- Authentication redirects, protected-route enforcement, route classification tests, and integration/browser verification are deferred because the task explicitly prohibits them here.
+- The root proxy uses the Next.js 16 `proxy.ts` convention and excludes static assets from invocation.
+
+### AUTH-03 checkpoint commit
+
+- Implementation commit: `916106973d6aca7601d05b5b9fb605e31f597ad2`
+- Commit message: `feat(auth): complete AUTH-03 session refresh proxy`
+- Tracker update is committed separately so the implementation commit remains limited to AUTH-03 code.
+
+AUTH-02 followed the canonical plan:
 
 - Only the approved Supabase dependencies and client modules were added.
 - No custom JWT, profiles table, migration, or auth flow was added.
@@ -134,4 +154,4 @@ None. AUTH-02 followed the canonical plan:
 
 ## Handoff
 
-The next agent should read [AUTH_IMPLEMENTATION_PLAN.md](./AUTH_IMPLEMENTATION_PLAN.md) and this file, verify the worktree, and begin **AUTH-03** only. AUTH-03 may add the Next.js 16 `proxy.ts` session-refresh boundary; do not expand it into signup, login, callbacks, logout, protected routes, or database work. The Supabase client modules currently fail explicitly when public configuration is missing, and runtime Supabase behavior remains unverified until the required environment variables and project are available.
+After the AUTH-03 implementation and tracker commits, the next agent should read [AUTH_IMPLEMENTATION_PLAN.md](./AUTH_IMPLEMENTATION_PLAN.md) and this file before beginning **AUTH-04**. Do not expand this checkpoint into signup, login, callbacks, logout, protected routes, or database work. The Supabase client modules and proxy fail explicitly when public configuration is missing, and runtime Supabase behavior remains unverified until the required environment variables and project are available.
