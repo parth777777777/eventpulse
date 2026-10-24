@@ -2,18 +2,18 @@
 
 **Overall status:** `IN_PROGRESS`
 **Current phase:** Phase 2 — Supabase dependencies and clients  
-**Current step:** `AUTH-07`
-**Last completed step:** `AUTH-06`
+**Current step:** `AUTH-08`
+**Last completed step:** `AUTH-07`
 **AUTH-02 implementation commit:** `7cf24c7` (`feat(auth): complete AUTH-02 Supabase client setup`)  
 **Status authority:** This file reflects verified repository state, not generated code or chat progress.
 
 ## Current task
 
-`AUTH-06` is complete. Login validates and establishes Supabase-managed sessions, preserves safe internal destinations, and logout signs out through a server route before returning to the public home page.
+`AUTH-07` is complete. Protected saved and organizer paths now redirect anonymous users to login with safe internal destinations, while public discovery remains accessible. The shared account indicator reflects the Supabase session; organizer ownership and persistence remain intentionally unimplemented.
 
 ## Next action
 
-Complete AUTH-04 verification and commit before beginning AUTH-05.
+Complete AUTH-08 verification and commit before beginning AUTH-09.
 
 ## Step checklist
 
@@ -25,9 +25,8 @@ Complete AUTH-04 verification and commit before beginning AUTH-05.
 | AUTH-04 | `COMPLETED` | Added safe same-origin redirect validation and `/auth/callback` code exchange with explicit failure redirects. Implementation commit: `805a6abf8117a3e7252dc8c5503eb1d8d349269b`. |
 | AUTH-05 | `COMPLETED` | Added email/password signup, validation, callback return-path wiring, and confirmation-pending feedback. Implementation commit: `efd2453c07cca99983f51831bc977c6d1d9ea92a`. |
 | AUTH-06 | `COMPLETED` | Added login, safe destination handling, and logout. Implementation commit: `897e9b12c586fd2c8898fd02ec893a067fc45013`. |
-| AUTH-07 | `IN_PROGRESS` | Adding protected-route enforcement and authenticated identity without implying organizer authorization. |
-| AUTH-07 | `NOT_STARTED` | Protected routes and authenticated identity are not implemented. Current bookmarks and organizer forms remain demo-only. |
-| AUTH-08 | `NOT_STARTED` | No auth test setup exists; `package.json` has no test script. `next.config.mjs` still ignores TypeScript build errors. |
+| AUTH-07 | `COMPLETED` | Added protected-route enforcement and authenticated identity without implying organizer authorization. Implementation commit: `828df53656db0b533dfc461658c9c875569ec33e`. |
+| AUTH-08 | `IN_PROGRESS` | Adding minimal automated verification and removing the ignored TypeScript build-error setting after fixing auth-related errors. |
 | AUTH-09 | `NOT_STARTED` | Handoff review is pending completion of the core steps. |
 | Password recovery milestone | `DEFERRED` | Explicitly deferred until AUTH-01 through AUTH-08 pass verification; this is the next authentication milestone. |
 
@@ -89,6 +88,13 @@ Complete AUTH-04 verification and commit before beginning AUTH-05.
 - [components/auth/login-form.tsx](../../components/auth/login-form.tsx): password login and safe destination handling.
 - [app/auth/logout/route.ts](../../app/auth/logout/route.ts): server-side Supabase sign-out route.
 
+### AUTH-07 files
+
+- [lib/auth/routes.ts](../../lib/auth/routes.ts): protected route classification.
+- [components/auth/account-menu.tsx](../../components/auth/account-menu.tsx): authenticated identity and sign-out affordance.
+- [lib/supabase/proxy.ts](../../lib/supabase/proxy.ts): redirects anonymous protected navigation after session refresh.
+- [components/eventpulse-pages.tsx](../../components/eventpulse-pages.tsx): uses the shared account indicator in the existing shell.
+
 The worktree’s unrelated modifications in [components/eventpulse-app.tsx](../../components/eventpulse-app.tsx) and [components/eventpulse-pages.tsx](../../components/eventpulse-pages.tsx), plus generated `next-env.d.ts` and `tsconfig.tsbuildinfo`, were preserved.
 
 ## Commands executed
@@ -142,6 +148,9 @@ No packages beyond the two AUTH-02-approved dependencies were installed, no appl
 | AUTH-06 type check | Passed: direct `node_modules/.bin/tsc.cmd --noEmit` exited 0. |
 | AUTH-06 production build | Passed: direct `node_modules/.bin/next.cmd build` exited 0; Next reported that type validation was skipped by the existing setting. |
 | AUTH-06 diff and staged-diff checks | Passed: implementation staged diff contained only login and logout files; staged whitespace check exited 0. |
+| AUTH-07 type check | Passed: direct `node_modules/.bin/tsc.cmd --noEmit` exited 0. |
+| AUTH-07 production build | Passed: direct `node_modules/.bin/next.cmd build` exited 0; Next reported that type validation was skipped by the existing setting. |
+| AUTH-07 diff and staged-diff checks | Passed: staged implementation diff contained only route classification, proxy, account identity, shell integration, and related styling; staged whitespace check exited 0. |
 
 ## Configuration implications
 
