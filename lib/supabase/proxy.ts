@@ -38,9 +38,10 @@ export async function updateSession(request: NextRequest) {
     const redirectResponse = NextResponse.redirect(
       new URL(getLoginRedirectPath(destination), request.url),
     )
-    response.cookies.getAll().forEach(cookie => {
-      redirectResponse.cookies.set(cookie.name, cookie.value)
-    })
+    const setCookie = response.headers.get('set-cookie')
+    if (setCookie) {
+      redirectResponse.headers.set('set-cookie', setCookie)
+    }
     return redirectResponse
   }
 
