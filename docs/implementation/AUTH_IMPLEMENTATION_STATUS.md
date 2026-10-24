@@ -1,6 +1,6 @@
 # EventPulse Authentication Implementation Status
 
-**Overall status:** `IN_PROGRESS`  
+**Overall status:** `IN_PROGRESS`
 **Current phase:** Phase 2 — Supabase dependencies and clients  
 **Current step:** `AUTH-04`
 **Last completed step:** `AUTH-03`
