@@ -94,6 +94,15 @@ export async function GET(request: Request) {
     )
   }
 
+  const keyword = params.get('keyword')?.trim() || null
+
+  if (keyword && keyword.length > 200) {
+    return NextResponse.json(
+      { error: 'Keyword is too long.' },
+      { status: 400 },
+    )
+  }
+
   try {
     const supabase = await createClient()
 
@@ -119,10 +128,30 @@ export async function GET(request: Request) {
       )
     }
 
+    // Apply keyword filtering in JS since the RPC doesn't support it.
+    // Keyword matches title, description, category, venue_name, or city.
+    let rows = data ?? []
+    if (keyword) {
+      const kw = keyword.toLowerCase()
+      rows = rows.filter((row: Record<string, unknown>) => {
+        const searchText = [
+          row.title,
+          row.description,
+          row.category,
+          row.venue_name,
+          row.city,
+        ]
+          .filter(Boolean)
+          .join(' ')
+          .toLowerCase()
+        return searchText.includes(kw)
+      })
+    }
+
     return NextResponse.json({
-      data: data ?? [],
+      data: rows,
       meta: {
-        count: data?.length ?? 0,
+        count: rows.length,
         radiusKm: rawRadius ?? 25,
         locationProvided: lat !== null && lng !== null,
       },
