@@ -1,15 +1,15 @@
 # EventPulse Authentication Implementation Status
 
-**Overall status:** `IN_PROGRESS`
+**Overall status:** `COMPLETED`
 **Current phase:** Phase 2 — Supabase dependencies and clients  
-**Current step:** `AUTH-08`
-**Last completed step:** `AUTH-07`
+**Current step:** `AUTH-09`
+**Last completed step:** `AUTH-08`
 **AUTH-02 implementation commit:** `7cf24c7` (`feat(auth): complete AUTH-02 Supabase client setup`)  
 **Status authority:** This file reflects verified repository state, not generated code or chat progress.
 
 ## Current task
 
-`AUTH-07` is complete. Protected saved and organizer paths now redirect anonymous users to login with safe internal destinations, while public discovery remains accessible. The shared account indicator reflects the Supabase session; organizer ownership and persistence remain intentionally unimplemented.
+`AUTH-08` is complete. Minimal executable auth policy tests are available through `npm test`, TypeScript build errors are no longer ignored, and the production build passes with type validation enabled. AUTH-09 is the final documentation and handoff review.
 
 ## Next action
 
@@ -26,8 +26,8 @@ Complete AUTH-08 verification and commit before beginning AUTH-09.
 | AUTH-05 | `COMPLETED` | Added email/password signup, validation, callback return-path wiring, and confirmation-pending feedback. Implementation commit: `efd2453c07cca99983f51831bc977c6d1d9ea92a`. |
 | AUTH-06 | `COMPLETED` | Added login, safe destination handling, and logout. Implementation commit: `897e9b12c586fd2c8898fd02ec893a067fc45013`. |
 | AUTH-07 | `COMPLETED` | Added protected-route enforcement and authenticated identity without implying organizer authorization. Implementation commit: `828df53656db0b533dfc461658c9c875569ec33e`. |
-| AUTH-08 | `IN_PROGRESS` | Adding minimal automated verification and removing the ignored TypeScript build-error setting after fixing auth-related errors. |
-| AUTH-09 | `NOT_STARTED` | Handoff review is pending completion of the core steps. |
+| AUTH-08 | `COMPLETED` | Added executable redirect/route-policy tests, `npm test`, and type-checked production build safety. Implementation commit: `597a27d7bcfbf97cb07aa80ff9a67356c60aaf3c`. |
+| AUTH-09 | `COMPLETED` | Documentation matches the verified implementation, checkpoint commits, test evidence, limitations, and deferred password-recovery milestone. |
 | Password recovery milestone | `DEFERRED` | Explicitly deferred until AUTH-01 through AUTH-08 pass verification; this is the next authentication milestone. |
 
 ## Files created or modified
@@ -95,6 +95,13 @@ Complete AUTH-08 verification and commit before beginning AUTH-09.
 - [lib/supabase/proxy.ts](../../lib/supabase/proxy.ts): redirects anonymous protected navigation after session refresh.
 - [components/eventpulse-pages.tsx](../../components/eventpulse-pages.tsx): uses the shared account indicator in the existing shell.
 
+### AUTH-08 files
+
+- [tests/auth.test.ts](../../tests/auth.test.ts): executable safe-redirect and public/protected route policy tests.
+- [package.json](../../package.json): documents the `npm test` command.
+- [next.config.mjs](../../next.config.mjs): removes `typescript.ignoreBuildErrors`.
+- [tsconfig.json](../../tsconfig.json): permits explicit TypeScript imports used by the Node test runner.
+
 The worktree’s unrelated modifications in [components/eventpulse-app.tsx](../../components/eventpulse-app.tsx) and [components/eventpulse-pages.tsx](../../components/eventpulse-pages.tsx), plus generated `next-env.d.ts` and `tsconfig.tsbuildinfo`, were preserved.
 
 ## Commands executed
@@ -151,30 +158,36 @@ No packages beyond the two AUTH-02-approved dependencies were installed, no appl
 | AUTH-07 type check | Passed: direct `node_modules/.bin/tsc.cmd --noEmit` exited 0. |
 | AUTH-07 production build | Passed: direct `node_modules/.bin/next.cmd build` exited 0; Next reported that type validation was skipped by the existing setting. |
 | AUTH-07 diff and staged-diff checks | Passed: staged implementation diff contained only route classification, proxy, account identity, shell integration, and related styling; staged whitespace check exited 0. |
+| AUTH-08 automated tests | Passed: `npm test` exited 0; 3 tests passed, 0 failed. Node emitted only experimental type-stripping/module warnings. |
+| AUTH-08 type check | Passed: direct `node_modules/.bin/tsc.cmd --noEmit` exited 0. |
+| AUTH-08 production build | Passed: direct `node_modules/.bin/next.cmd build` exited 0 and explicitly ran TypeScript validation. |
+| AUTH-08 diff and staged-diff checks | Passed: staged implementation diff contained only tests and build/test configuration; staged whitespace check exited 0. |
 
 ## Configuration implications
 
-[next.config.mjs](../../next.config.mjs) contains `typescript.ignoreBuildErrors: true`. The developer-terminal standalone TypeScript check passed, so removing this setting appears technically feasible based on the current source/type evidence. It was not removed in AUTH-02 because that changes application configuration and requires a dedicated build rerun with type validation enabled. The successful build must not be treated as complete type verification while the setting remains enabled.
+[next.config.mjs](../../next.config.mjs) no longer ignores TypeScript build errors. The AUTH-08 production build ran TypeScript validation successfully.
 
 ## Known failures, blockers, and unresolved decisions
 
 - The agent-local pnpm shim is broken even though the developer terminal has a working `pnpm.cmd` path. This environment discrepancy is recorded rather than corrected in AUTH-01.
 - The agent terminal saw a differing generated `.next` state and a missing `routes.d.ts`; the developer-terminal result with the generated route declaration and passing standalone compiler is the verified baseline supplied for this task.
-- `package.json` defines no lint or test script and no test files were found.
+- No lint script is defined; the `npm test` script now runs the focused Node test file.
 - No Supabase project URL, public key, email provider, or redirect configuration is present in the repository.
 - No database, `auth.users` integration, profile table, bookmarks table, organizer table, or RLS migration exists.
 - Current bookmarks are local React state and organizer forms call `preventDefault()` without persistence.
 - Existing client components use `@ts-nocheck`; this remains a pre-existing type-safety concern and was not changed.
-- Planned test strategy: use a lightweight unit runner for pure redirect/route helpers and a browser runner for session persistence/logout/protected/public-route flows; add packages and scripts only in AUTH-08.
+- Automated coverage is focused on pure redirect and route-policy behavior. Live Supabase signup, login, refresh persistence, logout, callback exchange, and browser navigation still require a configured Supabase project and are not claimed as executed.
 - Runtime calls against a Supabase project were not performed because no project configuration exists; this does not block the client module acceptance criteria.
 
 ## Deviations from the canonical plan
 
-AUTH-03 is intentionally narrower than the canonical plan for this checkpoint:
+AUTH-03 was intentionally narrower than the canonical plan for its checkpoint:
 
 - Session refresh and cookie propagation are implemented.
 - Authentication redirects, protected-route enforcement, route classification tests, and integration/browser verification are deferred because the task explicitly prohibits them here.
 - The root proxy uses the Next.js 16 `proxy.ts` convention and excludes static assets from invocation.
+
+AUTH-07 completed the deferred route-protection portion of the canonical plan. Authentication does not grant organizer authorization, and demo bookmarks/forms remain non-persistent.
 
 AUTH-04 follows the canonical architecture. Live callback verification remains unavailable until a Supabase project is configured.
 
@@ -200,6 +213,20 @@ AUTH-06 follows the canonical architecture. Live credential, refresh-persistence
 - Commit message: `feat(auth): complete AUTH-06 login and logout`
 - Tracker update is committed separately so the implementation commit remains limited to AUTH-06 code.
 
+### AUTH-07 checkpoint commit
+
+- Implementation commit: `828df53656db0b533dfc461658c9c875569ec33e`
+- Commit message: `feat(auth): complete AUTH-07 protected routes and identity`
+- Tracker update is committed separately so the implementation commit remains limited to AUTH-07 code.
+
+AUTH-08 completed the minimal local verification scope without adding a test dependency or claiming live Supabase behavior.
+
+### AUTH-08 checkpoint commit
+
+- Implementation commit: `597a27d7bcfbf97cb07aa80ff9a67356c60aaf3c`
+- Commit message: `test(auth): complete AUTH-08 verification and build safety`
+- Tracker update is committed separately so the implementation commit remains limited to AUTH-08 code and configuration.
+
 ### AUTH-03 checkpoint commit
 
 - Implementation commit: `916106973d6aca7601d05b5b9fb605e31f597ad2`
@@ -214,4 +241,4 @@ AUTH-02 followed the canonical plan:
 
 ## Handoff
 
-After the AUTH-06 implementation and tracker commits, continue with **AUTH-07** only after rereading the canonical plan and this status file.
+Authentication implementation is complete through AUTH-09. Password recovery is the next authentication milestone and was not implemented in this task.
